@@ -1,0 +1,36 @@
+﻿<Modal @ref="deleteModal">
+    <ModalContent Centered="true">
+        <ModalHeader>
+            <ModalTitle>Employee edit</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Name</FieldLabel>
+                <TextEdit Placeholder="Enter name..." />
+            </Field>
+            <Field>
+                <FieldLabel>Surname</FieldLabel>
+                <TextEdit Placeholder="Enter surname..." />
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="(() => HideModal(deleteModal))">Close</Button>
+            <Button Color="Color.Primary" Clicked="(() => HideModal(deleteModal))">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    private Modal deleteModal;
+
+    private void ShowModal(Modal modal)
+    {
+        modal.Show();
+    }
+
+    private void HideModal(Modal modal)
+    {
+        modal.Hide();
+    }
+}
