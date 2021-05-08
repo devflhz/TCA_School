@@ -2,59 +2,99 @@
 
 @using WebApp.Services;
 @using Data.Models;
-@using Pages.Modal;
+
 @inject StudentService StudentService
-@inject IModalService Modal
 
-@if (students == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Last Name</th>
-                <th>Gender</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var student in students)
-            {
-                <tr>
-                    <td>@student.FirstName</td>
-                    <td>@student.MiddleName</td>
-                    <td>@student.LastName</td>
-                    <td>@student.GetGender()</td>
-                    <td>
-                        @foreach (var item in student.Phones.Where(a => a.StudentId == student.StudentId).Select(a => a).Take(5))
-                        {
-                            <a href="tel:+@item.PhoneLink">@item.Phone1</a><br />
-                        }
-                    </td>
-                    <td>
-                        @foreach (var item in student.Addresses.Where(a => a.StudentId == student.StudentId).Select(a => a).Take(5))
-                        {
-                            <p>@item.FormattedAddress</p>
-                        }
-                    </td>
-                    <td>
-                        <button class="btn btn-outline-primary" @onclick="@(() => Modal.Show<EditModal>("Edit"))">Edit</button>
-                        <button class="btn btn-outline-danger" @onclick="@(() => Modal.Show<DeleteModal>("Delete"))">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                Featured
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                Featured
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                Featured
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Special title treatment</h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col">
+        @if (students == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in students)
+                    {
+                        <tr>
+                            <td>@student.FirstName</td>
+                            <td>@student.MiddleName</td>
+                            <td>@student.LastName</td>
+                            <td>@student.GetGender()</td>
+                            <td>
+                                @foreach (var item in student.Phones.Where(a => a.StudentId == student.StudentId).Select(a => a).Take(5))
+                                {
+                                    <a href="tel:+@item.PhoneLink">@item.Phone1</a><br />
+                                }
+                            </td>
+                            <td>
+                                @foreach (var item in student.Addresses.Where(a => a.StudentId == student.StudentId).Select(a => a).Take(5))
+                                {
+                                    <p>@item.FormattedAddress</p>
+                                }
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-primary">Edit</button>
+                                <button class="btn btn-outline-danger">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
 
 @code {
     private List<Student> students;
