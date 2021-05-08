@@ -13,7 +13,7 @@ namespace Data.Models
         public string City { get; set; }
         public string ZipPostcode { get; set; }
         public string State { get; set; }
-        public DateTime? CreatedOn { get; set; }
+        public DateTime? CreatedOn { get; }
         public DateTime? UpdatedOn { get; set; }
 
         public string FormattedAddress

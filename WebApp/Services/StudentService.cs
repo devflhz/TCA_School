@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Data.Models;
+using FluentResults;
 using Newtonsoft.Json;
 
 namespace WebApp.Services
@@ -12,7 +13,7 @@ namespace WebApp.Services
     {
         static readonly HttpClient client = new HttpClient();
 
-        public async Task<List<Student>> GetStudentsAsync()
+        public async Task<Result<List<Student>>> GetStudentsAsync()
         {
             List<Student> students;
             try
@@ -22,14 +23,46 @@ namespace WebApp.Services
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 students = JsonConvert.DeserializeObject<List<Student>>(responseBody);
+                return Result.Ok(students);
             }
             catch (HttpRequestException e)
             {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-                students = null;
+                return Result.Fail(e.Message);
             }
-            return students;
+        }
+
+        public async Task<Result<string>> PostStudentAsync(Student student)
+        {
+            var data = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await client.PostAsync("https://localhost:44385/api/Student", data);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                return Result.Ok(responseBody);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+
+        public async Task<Result<List<string>>> GetGendersAsync()
+        {
+            List<string> genders;
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/ceceradio/genders/master/genders.json");
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                genders = JsonConvert.DeserializeObject<List<string>>(responseBody);
+                return Result.Ok(genders);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
         }
     }
 }
