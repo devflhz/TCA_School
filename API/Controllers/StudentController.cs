@@ -106,11 +106,26 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteStudent(int id)
         {
             var student = await _context.Students.FindAsync(id);
+            var phones = _context.Phones.Where(a => a.StudentId == id).Select(a => a).ToList();
+            var addresses = _context.Addresses.Where(a => a.StudentId == id).Select(a => a).ToList();
+            var emails = _context.Emails.Where(a => a.StudentId == id).Select(a => a).ToList();
             if (student == null)
             {
                 return NotFound();
             }
 
+            foreach (var phone in phones)
+            {
+                _context.Phones.Remove(phone);
+            }
+            foreach (var address in addresses)
+            {
+                _context.Addresses.Remove(address);
+            }
+            foreach (var email in emails)
+            {
+                _context.Emails.Remove(email);
+            }
             _context.Students.Remove(student);
             await _context.SaveChangesAsync();
 

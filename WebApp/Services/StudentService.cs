@@ -31,6 +31,24 @@ namespace WebApp.Services
             }
         }
 
+        public async Task<Result<Student>> GetStudentAsync(int studentId)
+        {
+            Student student;
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:44385/api/Student/{studentId}");
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                student = JsonConvert.DeserializeObject<Student>(responseBody);
+                return Result.Ok(student);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+
         public async Task<Result<string>> PostStudentAsync(Student student)
         {
             var data = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
@@ -58,6 +76,20 @@ namespace WebApp.Services
                 string responseBody = await response.Content.ReadAsStringAsync();
                 genders = JsonConvert.DeserializeObject<List<string>>(responseBody);
                 return Result.Ok(genders);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+
+        public async Task<Result> DeleteStudent(int studentId)
+        {
+            try
+            {
+                var response = await client.DeleteAsync($"https://localhost:44385/api/Student/{studentId}");
+                response.EnsureSuccessStatusCode();
+                return Result.Ok();
             }
             catch (HttpRequestException e)
             {

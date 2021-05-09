@@ -9,71 +9,59 @@
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="first_name">First Name</label>
-            <input type="text" class="form-control" id="first_name" placeholder="First Name" @bind="student.FirstName" @bind:event="oninput" required>
+            <label placeholder="First Name">@Student.FirstName</label>
         </div>
         <div class="form-group col-md-4">
             <label for="middle_name">Middle Name</label>
-            <input type="text" class="form-control" id="middle_name" placeholder="Middle Name" @bind="student.MiddleName" @bind:event="oninput">
+            <label placeholder="Middle Name">@Student.MiddleName</label>
         </div>
         <div class="form-group col-md-4">
             <label for="last_name">Last Name</label>
-            <input type="text" class="form-control" id="last_name" placeholder="Last Name" @bind="student.LastName" @bind:event="oninput" required>
+            <label placeholder="Last Name">@Student.LastName</label>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col">
             <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" placeholder="Address Line" @bind="address.AddressLine" @bind:event="oninput" required>
+            <label placeholder="Address">@address.AddressLine</label>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col">
             <label for="inputAddress">Email</label>
-            <input type="text" class="form-control" id="Email" placeholder="Email" @bind="email.Email1" @bind:event="oninput" required>
+            <label placeholder="Email">@email.Email1</label>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="phone">Phone</label>
-            <input type="text" class="form-control" id="phone" placeholder="Phone Number" @bind="phone.Phone1" @bind:event="oninput" required>
+            <label placeholder="Phone">@phone.Phone1</label>
         </div>
         <div class="form-group col-md-6">
             <label for="phone">Genero</label>
-            <select @bind="student.Gender" id="inputState" class="form-control" required>
-                <option selected>Choose...</option>
-                @foreach (var gender in genders)
-                {
-                    <option value="@gender">@gender</option>
-                }
-            </select>
+            <label placeholder="First Name">@Student.Gender</label>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputCity">City</label>
-            <input type="text" class="form-control" id="inputCity" @bind="address.City" @bind:event="oninput" required>
+            <label placeholder="City">@address.City</label>
         </div>
         <div class="form-group col-md-4">
             <label for="inputState">State</label>
-            <select @bind="address.State" id="inputState" class="form-control" required>
-                <option selected>Choose...</option>
-                @foreach (var state in states)
-                {
-                    <option value="@state.Name">@state.Name</option>
-                }
-            </select>
+            <label placeholder="State">@address.State</label>
         </div>
         <div class="form-group col-md-2">
             <label for="inputZip">Zip</label>
-            <input type="text" class="form-control" id="inputZip" placeholder="Zip Code" @bind="address.ZipPostcode" @bind:event="oninput" required>
+            <label placeholder="First Name">@address.ZipPostcode</label>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary" @onclick="Save">Save</button>
     <p>@error</p>
 </form>
 
 @code {
-    private Student student = new Student();
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public Student Student { get; set; }
     private Address address = new Address();
     private Phone phone = new Phone();
     private Email email = new Email();
@@ -94,7 +82,7 @@
     async void Save()
     {
         Student studentPosted = new Student();
-        var studentResult = await StudentService.PostStudentAsync(student);
+        var studentResult = await StudentService.PostStudentAsync(Student);
         if (studentResult.IsSuccess)
             studentPosted = JsonConvert.DeserializeObject<Student>(studentResult.Value);
         var emailResult = await EmailService.PostEmailAsync(studentPosted.StudentId, email);

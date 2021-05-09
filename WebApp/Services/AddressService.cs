@@ -47,5 +47,36 @@ namespace WebApp.Services
                 return Result.Fail(e.Message);
             }
         }
+
+        public async Task<Result> PutAddressAsync(int studentId, Address address)
+        {
+            address.StudentId = studentId;
+            var data = new StringContent(JsonConvert.SerializeObject(address), Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await client.PutAsync("https://localhost:44385/api/Address", data);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                return Result.Ok(responseBody);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+
+        public async Task<Result> DeleteAddressAsync(int studentId)
+        {
+            try
+            {
+                var response = await client.DeleteAsync($"https://localhost:44385/api/Address/{studentId}");
+                response.EnsureSuccessStatusCode();
+                return Result.Ok();
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
     }
 }
