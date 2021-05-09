@@ -49,7 +49,7 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<Result<string>> PostStudentAsync(Student student)
+        public async Task<Result<Student>> PostStudentAsync(Student student)
         {
             var data = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
             try
@@ -57,7 +57,25 @@ namespace WebApp.Services
                 var response = await client.PostAsync("https://localhost:44385/api/Student", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                return Result.Ok(responseBody);
+                student = JsonConvert.DeserializeObject<Student>(responseBody);
+                return Result.Ok(student);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+        
+        public async Task<Result<Student>> PutStudentAsync(Student student)
+        {
+            var data = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await client.PostAsync("https://localhost:44385/api/Student", data);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                student = JsonConvert.DeserializeObject<Student>(responseBody);
+                return Result.Ok(student);
             }
             catch (HttpRequestException e)
             {
@@ -65,6 +83,20 @@ namespace WebApp.Services
             }
         }
 
+        public async Task<Result> DeleteStudent(int id)
+        {
+            try
+            {
+                var response = await client.DeleteAsync($"https://localhost:44385/api/Student/{id}");
+                response.EnsureSuccessStatusCode();
+                return Result.Ok();
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+        
         public async Task<Result<List<string>>> GetGendersAsync()
         {
             List<string> genders;
@@ -76,20 +108,6 @@ namespace WebApp.Services
                 string responseBody = await response.Content.ReadAsStringAsync();
                 genders = JsonConvert.DeserializeObject<List<string>>(responseBody);
                 return Result.Ok(genders);
-            }
-            catch (HttpRequestException e)
-            {
-                return Result.Fail(e.Message);
-            }
-        }
-
-        public async Task<Result> DeleteStudent(int studentId)
-        {
-            try
-            {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Student/{studentId}");
-                response.EnsureSuccessStatusCode();
-                return Result.Ok();
             }
             catch (HttpRequestException e)
             {

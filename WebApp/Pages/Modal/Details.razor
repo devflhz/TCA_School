@@ -79,15 +79,13 @@
             states = statesResult.Value;
     }
 
-    async void Save()
+    async void Save() //TODO: Handle cases.
     {
         Student studentPosted = new Student();
         var studentResult = await StudentService.PostStudentAsync(Student);
-        if (studentResult.IsSuccess)
-            studentPosted = JsonConvert.DeserializeObject<Student>(studentResult.Value);
-        var emailResult = await EmailService.PostEmailAsync(studentPosted.StudentId, email);
-        var addressResult = await AddressService.PostAddressAsync(studentPosted.StudentId, address);
-        var phoneResult = await PhoneService.PostPhoneAsync(studentPosted.StudentId, phone);
+        var emailResult = await EmailService.PostEmailAsync(studentResult.Value.StudentId, email);
+        var addressResult = await AddressService.PostAddressAsync(studentResult.Value.StudentId, address);
+        var phoneResult = await PhoneService.PostPhoneAsync(studentResult.Value.StudentId, phone);
         if (phoneResult.IsFailed || emailResult.IsFailed || studentResult.IsFailed || addressResult.IsFailed)
             error = "Couldn't post";
     }

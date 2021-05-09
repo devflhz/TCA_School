@@ -29,11 +29,11 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<Result<Email>> GetEmailAsync(int studentId)
+        public async Task<Result<Email>> GetEmailAsync(int id)
         {
             try
             {
-                var response = await client.GetAsync($"https://localhost:44385/api/Email/{studentId}");
+                var response = await client.GetAsync($"https://localhost:44385/api/Email/{id}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 Email emails = JsonConvert.DeserializeObject<Email>(responseBody);
@@ -45,10 +45,10 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<Result<Email>> PostEmailAsync(int studentId, Email email)
+        public async Task<Result<Email>> PostEmailAsync(int id, Email email)
         {
             email.EmailType = 1;
-            email.StudentId = studentId;
+            email.StudentId = id;
             var data = new StringContent(JsonConvert.SerializeObject(email), Encoding.UTF8, "application/json");
             try
             {
@@ -63,10 +63,10 @@ namespace WebApp.Services
                 return Result.Fail(e.Message);
             }
         }
-        public async Task<Result<Email>> PutEmailAsync(int studentId, Email email)
+        public async Task<Result<Email>> PutEmailAsync(int id, Email email)
         {
             email.EmailType = 1;
-            email.StudentId = studentId;
+            email.StudentId = id;
             var data = new StringContent(JsonConvert.SerializeObject(email), Encoding.UTF8, "application/json");
             try
             {
@@ -81,11 +81,11 @@ namespace WebApp.Services
                 return Result.Fail(e.Message);
             }
         }
-        public async Task<Result> DeleteEmailAsync(int studentId)
+        public async Task<Result> DeleteEmailAsync(int id)
         {
             try
             {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Email/{studentId}");
+                var response = await client.DeleteAsync($"https://localhost:44385/api/Email/{id}");
                 response.EnsureSuccessStatusCode();
                 return Result.Ok();
             }

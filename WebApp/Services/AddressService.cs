@@ -13,17 +13,31 @@ namespace WebApp.Services
     {
         static readonly HttpClient client = new HttpClient();
 
-        public async Task<Result<List<State>>> GetStatesAsync()
+        public async Task<Result<List<Address>>> GetAddressesAsync()
         {
-            List<State> states;
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/astockwell/countries-and-provinces-states-regions/master/countries/mexico.json");
-                var response = await client.SendAsync(request);
+                var response = await client.GetAsync("https://localhost:44385/api/Address");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                states = JsonConvert.DeserializeObject<List<State>>(responseBody);
-                return Result.Ok(states);
+                List<Address> addresses = JsonConvert.DeserializeObject<List<Address>>(responseBody);
+                return Result.Ok(addresses);
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+
+        public async Task<Result<Address>> GetAddresslAsync(int id)
+        {
+            try
+            {
+                var response = await client.GetAsync($"https://localhost:44385/api/Address/{id}");
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Address address = JsonConvert.DeserializeObject<Address>(responseBody);
+                return Result.Ok(address);
             }
             catch (HttpRequestException e)
             {
@@ -40,7 +54,8 @@ namespace WebApp.Services
                 var response = await client.PostAsync("https://localhost:44385/api/Address", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                return Result.Ok(responseBody);
+                address = JsonConvert.DeserializeObject<Address>(responseBody);
+                return Result.Ok(address);
             }
             catch (HttpRequestException e)
             {
@@ -48,7 +63,7 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<Result> PutAddressAsync(int studentId, Address address)
+        public async Task<Result<Address>> PutAddressAsync(int studentId, Address address)
         {
             address.StudentId = studentId;
             var data = new StringContent(JsonConvert.SerializeObject(address), Encoding.UTF8, "application/json");
@@ -57,7 +72,8 @@ namespace WebApp.Services
                 var response = await client.PutAsync("https://localhost:44385/api/Address", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                return Result.Ok(responseBody);
+                address = JsonConvert.DeserializeObject<Address>(responseBody);
+                return Result.Ok(address);
             }
             catch (HttpRequestException e)
             {
@@ -65,13 +81,31 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<Result> DeleteAddressAsync(int studentId)
+        public async Task<Result> DeleteAddressAsync(int id)
         {
             try
             {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Address/{studentId}");
+                var response = await client.DeleteAsync($"https://localhost:44385/api/Address/{id}");
                 response.EnsureSuccessStatusCode();
                 return Result.Ok();
+            }
+            catch (HttpRequestException e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
+
+        public async Task<Result<List<State>>> GetStatesAsync()
+        {
+            List<State> states;
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/astockwell/countries-and-provinces-states-regions/master/countries/mexico.json");
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                states = JsonConvert.DeserializeObject<List<State>>(responseBody);
+                return Result.Ok(states);
             }
             catch (HttpRequestException e)
             {
