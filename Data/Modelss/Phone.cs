@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Data.Models
+namespace Data.Modelss
 {
     public partial class Phone
     {
@@ -15,11 +15,6 @@ namespace Data.Models
         public string AreaCode { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public string PhoneLink
-        {
-            get { return CountryCode + Phone1; }
-        }
 
         public virtual Student Student { get; set; }
     }

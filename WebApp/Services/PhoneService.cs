@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.Constants;
+using Data.Models;
 using FluentResults;
 using Newtonsoft.Json;
 using System;
@@ -17,7 +18,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.GetAsync("https://localhost:44385/api/Phone");
+                var response = await client.GetAsync($"{Constants.APIUri}/Phone");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 List<Phone> phones = JsonConvert.DeserializeObject<List<Phone>>(responseBody);
@@ -33,7 +34,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.GetAsync($"https://localhost:44385/api/Phone/{id}");
+                var response = await client.GetAsync($"{Constants.APIUri}/Phone/{id}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 Phone phone = JsonConvert.DeserializeObject<Phone>(responseBody);
@@ -54,7 +55,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(phone), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PostAsync("https://localhost:44385/api/Phone", data);
+                var response = await client.PostAsync($"{Constants.APIUri}/Phone", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 phone = JsonConvert.DeserializeObject<Phone>(responseBody);
@@ -75,7 +76,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(phone), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PutAsync("https://localhost:44385/api/Phone", data);
+                var response = await client.PutAsync($"{Constants.APIUri}/Phone/{phone.PhoneId}", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 phone = JsonConvert.DeserializeObject<Phone>(responseBody);
@@ -91,7 +92,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Phone/{id}");
+                var response = await client.DeleteAsync($"{Constants.APIUri}/Phone/{id}");
                 response.EnsureSuccessStatusCode();
                 return Result.Ok();
             }

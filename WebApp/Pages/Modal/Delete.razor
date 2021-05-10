@@ -1,5 +1,93 @@
-﻿<h3>Delete</h3>
+﻿@using WebApp.Services;
+@using Newtonsoft.Json;
+@inject AddressService AddressService
+@inject StudentService StudentService
+@inject PhoneService PhoneService
+@inject EmailService EmailService
+@inject NavigationManager uriHelper
+
+<div class="card">
+    <div class="card-header">
+        Student to delete
+    </div>
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="first_name">First Name</label>
+                <label class="form-control" placeholder="First Name">@Student.FirstName</label>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="middle_name">Middle Name</label>
+                <label class="form-control" placeholder="Middle Name">@Student.MiddleName</label>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="last_name">Last Name</label>
+                <label class="form-control" placeholder="Last Name">@Student.LastName</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
+                <label for="inputAddress">Address</label>
+                @foreach (var address in Addresses)
+                {
+                    <label class="form-control" placeholder="Address">@address.FormattedAddress</label>
+                }
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
+                <label for="inputAddress">Email</label>
+                @foreach (var email in Emails)
+                {
+                    <label class="form-control" placeholder="Email">@email.Email1</label>
+                }
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="phone">Phone</label>
+                @foreach (var phone in Phones)
+                {
+                    <label class="form-control" placeholder="Phone">@phone.Phone1</label>
+                }
+            </div>
+            <div class="form-group col-md-6">
+                <label for="phone">Gender</label>
+                <label class="form-control" placeholder="First Name">@Student.Gender</label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <p class="form-text">Delete this student?</p>
+    </div>
+    <div class="form-group col-md-6">
+        <button class="btn btn-danger" @onclick="() => DeleteStudent()">Delete</button>
+    </div>
+</div>
+
 
 @code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    [Parameter] public Student Student { get; set; }
+    [Parameter] public List<Address> Addresses { get; set; }
+    [Parameter] public List<Phone> Phones { get; set; }
+    [Parameter] public List<Email> Emails { get; set; }
 
+    async void DeleteStudent()
+    {
+        var result = await StudentService.DeleteStudentAsync(Student.StudentId);
+        if (result.IsSuccess)
+        {
+            StateHasChanged();
+            Close();
+            uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+        }
+    }
+
+    void Close()
+    {
+        ModalInstance.CloseAsync();
+    }
 }

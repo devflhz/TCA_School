@@ -4,81 +4,346 @@
 @inject StudentService StudentService
 @inject PhoneService PhoneService
 @inject EmailService EmailService
+@inject ValidationService ValidationService
+@inject NavigationManager uriHelper
 
-<form>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="first_name">First Name</label>
-            <input type="text" class="form-control" id="first_name" placeholder="First Name" @bind="Student.FirstName" @bind:event="oninput" required>
+<div class="row">
+    <div class="col-6">
+        <div class="form-row">
+            <div class="form-group col">
+                <div class="card">
+                    <div class="card-header">
+                        Student
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-4">
+                                <label for="first_name">First Name</label>
+                                <Validation Validator="@ValidationService.ValidateText">
+                                    <TextEdit Placeholder="Enter first name" @bind-Text="Student.FirstName" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the first name.</ValidationNone>
+                                            <ValidationSuccess>First name is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid first name (only letters)!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="middle_name">Middle Name</label>
+                                <Validation Validator="@ValidationService.ValidateText">
+                                    <TextEdit Placeholder="Enter middle name" @bind-Text="Student.MiddleName" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the middle name.</ValidationNone>
+                                            <ValidationSuccess>Middle name is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid middle name (only letters)!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="last_name">Last Name</label>
+                                <Validation Validator="@ValidationService.ValidateText">
+                                    <TextEdit Placeholder="Enter first name" @bind-Text="Student.LastName" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the last name.</ValidationNone>
+                                            <ValidationSuccess>Last name is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid last name (only letters)!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group col-md-4">
-            <label for="middle_name">Middle Name</label>
-            <input type="text" class="form-control" id="middle_name" placeholder="Middle Name" @bind="Student.MiddleName" @bind:event="oninput">
-        </div>
-        <div class="form-group col-md-4">
-            <label for="last_name">Last Name</label>
-            <input type="text" class="form-control" id="last_name" placeholder="Last Name" @bind="Student.LastName" @bind:event="oninput" required>
+        <div class="form-row">
+            <div class="form-group col">
+                <div class="card">
+                    <div class="card-header">
+                        Emails
+                        <div class="row">
+                            <div class="col-10">
+                                <Validation Validator="@ValidationService.ValidateEmail">
+                                    <TextEdit Placeholder="Enter email" @bind-Text="newEmail.Email1" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the email.</ValidationNone>
+                                            <ValidationSuccess>Email is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid email!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-primary float-right" @onclick="() => AddEmail(newEmail)">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var email in Emails)
+                        {
+                            <div class="form-row">
+                                @if (Emails.Count > 1)
+                                {
+                                    <div class="form-group col-11">
+                                        <Validation Validator="@ValidationService.ValidateEmail">
+                                            <TextEdit Placeholder="Enter email" @bind-Text="email.Email1" class="form-control" required>
+                                                <Feedback>
+                                                    <ValidationNone>Please enter the email.</ValidationNone>
+                                                    <ValidationSuccess>Email is good.</ValidationSuccess>
+                                                    <ValidationError>Enter valid email!</ValidationError>
+                                                </Feedback>
+                                            </TextEdit>
+                                        </Validation>
+                                    </div>
+                                    <div class="form-group col-1">
+                                        <button class="btn btn-danger" @onclick="() => DeleteEmail(email)">🗑️</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group col">
+                                        <Validation Validator="@ValidationService.ValidateEmail">
+                                            <TextEdit Placeholder="Enter email" @bind-Text="email.Email1" class="form-control" required>
+                                                <Feedback>
+                                                    <ValidationNone>Please enter the email.</ValidationNone>
+                                                    <ValidationSuccess>Email is good.</ValidationSuccess>
+                                                    <ValidationError>Enter valid email!</ValidationError>
+                                                </Feedback>
+                                            </TextEdit>
+                                        </Validation>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" placeholder="Address Line" @bind="address.AddressLine" @bind:event="oninput" required>
+    <div class="col-6">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Phones
+                        <div class="row">
+                            <div class="col-10">
+                                <Validation Validator="@ValidationService.ValidatePhone">
+                                    <TextEdit Placeholder="Enter phone number" @bind-Text="newPhone.Phone1" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the phone number.</ValidationNone>
+                                            <ValidationSuccess>Phone number is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid phone number!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                            <div class="col-2"><button class="btn btn-primary float-right" @onclick="() => AddPhone(newPhone)">Add</button></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var phone in Phones)
+                        {
+                            <div class="form-row">
+                                @if (Phones.Count > 1)
+                                {
+                                    <div class="form-group col-10">
+                                        <Validation Validator="@ValidationService.ValidatePhone">
+                                            <TextEdit Placeholder="Enter phone number" @bind-Text="phone.Phone1" class="form-control" required>
+                                                <Feedback>
+                                                    <ValidationNone>Please enter the phone number.</ValidationNone>
+                                                    <ValidationSuccess>Phone number is good.</ValidationSuccess>
+                                                    <ValidationError>Enter valid phone number!</ValidationError>
+                                                </Feedback>
+                                            </TextEdit>
+                                        </Validation>
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <button class="btn btn-danger" @onclick="() => DeletePhone(phone)">🗑️</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group col">
+                                        <Validation Validator="@ValidationService.ValidatePhone">
+                                            <TextEdit Placeholder="Enter phone number" @bind-Text="phone.Phone1" class="form-control" required>
+                                                <Feedback>
+                                                    <ValidationNone>Please enter the phone number.</ValidationNone>
+                                                    <ValidationSuccess>Phone number is good.</ValidationSuccess>
+                                                    <ValidationError>Enter valid phone number!</ValidationError>
+                                                </Feedback>
+                                            </TextEdit>
+                                        </Validation>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Gender
+                    </div>
+                    <div class="card-body">
+                        <select @bind="Student.Gender" id="inputState" class="form-control" required>
+                            <option selected>Choose...</option>
+                            @foreach (var gender in genders)
+                            {
+                                <option value="@gender">@gender</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="inputAddress">Email</label>
-            <input type="text" class="form-control" id="Email" placeholder="Email" @bind="email.Email1" @bind:event="oninput" required>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="phone">Phone</label>
-            <input type="text" class="form-control" id="phone" placeholder="Phone Number" @bind="phone.Phone1" @bind:event="oninput" required>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="phone">Genero</label>
-            <select @bind="Student.Gender" id="inputState" class="form-control" required>
-                <option selected>Choose...</option>
-                @foreach (var gender in genders)
+        <div class="card">
+            <div class="card-header">
+                Addresses
+                <div class="row">
+                    <div class="col-10">
+                        <label for="">Add a new address.</label>
+                        <Validation Validator="@ValidationService.ValidateTextNumSym">
+                            <TextEdit Placeholder="Enter address line" @bind-Text="newAddress.AddressLine" class="form-control float-right" required>
+                                <Feedback>
+                                    <ValidationNone>Please enter the address line.</ValidationNone>
+                                    <ValidationSuccess>Address line is good.</ValidationSuccess>
+                                    <ValidationError>Enter valid address line!</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </Validation>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-primary float-right" @onclick="() => AddAddress(newAddress)">Add</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <Validation Validator="@ValidationService.ValidateText">
+                            <TextEdit Placeholder="Enter city" @bind-Text="newAddress.City" class="form-control float-right" required>
+                                <Feedback>
+                                    <ValidationNone>Please enter the city.</ValidationNone>
+                                    <ValidationSuccess>City is good.</ValidationSuccess>
+                                    <ValidationError>Enter valid city!</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </Validation>
+                    </div>
+                    <div class="col-4">
+                        <select @bind="newAddress.State" id="inputState" class="form-control" placeholder="State">
+                            <option selected>Choose...</option>
+                            @foreach (var state in states)
+                            {
+                                <option value="@state.Name">@state.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <Validation Validator="@ValidationService.ValidateZip">
+                            <TextEdit Placeholder="Enter zip code" @bind-Text="newAddress.ZipPostcode" class="form-control float-right" required>
+                                <Feedback>
+                                    <ValidationNone>Please enter the zip code.</ValidationNone>
+                                    <ValidationSuccess>Zip code is good.</ValidationSuccess>
+                                    <ValidationError>Enter valid zip code!</ValidationError>
+                                </Feedback>
+                            </TextEdit>
+                        </Validation>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @foreach (var address in Addresses)
                 {
-                    <option value="@gender">@gender</option>
+                    <div class="form-row">
+                        @if (Addresses.Count > 1)
+                        {
+                            <div class="form-group col-11">
+                                <Validation Validator="@ValidationService.ValidateTextNumSym">
+                                    <TextEdit Placeholder="Enter address line" @bind-Text="newAddress.AddressLine" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the address line.</ValidationNone>
+                                            <ValidationSuccess>Address line is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid address line!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                            <div class="form-group col-1">
+                                <button class="btn btn-danger" @onclick="() => DeleteAddress(address)">🗑️</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group col">
+                                <Validation Validator="@ValidationService.ValidateTextNumSym">
+                                    <TextEdit Placeholder="Enter address line" @bind-Text="address.AddressLine" class="form-control float-right" required>
+                                        <Feedback>
+                                            <ValidationNone>Please enter the address line.</ValidationNone>
+                                            <ValidationSuccess>Address line is good.</ValidationSuccess>
+                                            <ValidationError>Enter valid address line!</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </div>
+                        }
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputCity">City</label>
+                            <Validation Validator="@ValidationService.ValidateTextNumSym">
+                                <TextEdit Placeholder="Enter city" @bind-Text="address.City" class="form-control float-right" required>
+                                    <Feedback>
+                                        <ValidationNone>Please enter the city.</ValidationNone>
+                                        <ValidationSuccess>City is good.</ValidationSuccess>
+                                        <ValidationError>Enter valid city!</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </Validation>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputState">State</label>
+                            <select @bind="address.State" id="inputState" class="form-control" required>
+                                <option selected>Choose...</option>
+                                @foreach (var state in states)
+                                {
+                                    <option value="@state.Name">@state.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="inputZip">Zip</label>
+                            <Validation Validator="@ValidationService.ValidateZip">
+                                <TextEdit Placeholder="Enter zip code" @bind-Text="address.ZipPostcode" class="form-control float-right" required>
+                                    <Feedback>
+                                        <ValidationNone>Please enter the zip code.</ValidationNone>
+                                        <ValidationSuccess>Zip code is good.</ValidationSuccess>
+                                        <ValidationError>Enter valid zip code!</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </Validation>
+                            <input type="text" class="form-control" id="inputZip" placeholder="Zip Code" @bind="address.ZipPostcode" @bind:event="oninput" required>
+                        </div>
+                    </div>
                 }
-            </select>
+            </div>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="inputCity">City</label>
-            <input type="text" class="form-control" id="inputCity" @bind="address.City" @bind:event="oninput" required>
-        </div>
-        <div class="form-group col-md-4">
-            <label for="inputState">State</label>
-            <select @bind="address.State" id="inputState" class="form-control" required>
-                <option selected>Choose...</option>
-                @foreach (var state in states)
-                {
-                    <option value="@state.Name">@state.Name</option>
-                }
-            </select>
-        </div>
-        <div class="form-group col-md-2">
-            <label for="inputZip">Zip</label>
-            <input type="text" class="form-control" id="inputZip" placeholder="Zip Code" @bind="address.ZipPostcode" @bind:event="oninput" required>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary" @onclick="Save">Save</button>
-    <p>@error</p>
-</form>
+</div>
+<button type="submit" class="btn btn-primary" @onclick="Save">Save</button>
 
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Student Student { get; set; }
-    private Address address = new Address();
-    private Phone phone = new Phone();
-    private Email email = new Email();
-    private string error;
+    [Parameter] public List<Address> Addresses { get; set; }
+    [Parameter] public List<Phone> Phones { get; set; }
+    [Parameter] public List<Email> Emails { get; set; }
+    Email newEmail = new Email();
+    Phone newPhone = new Phone();
+    Address newAddress = new Address();
     private List<State> states = new List<State>();
     private List<string> genders = new List<string>();
 
@@ -94,15 +359,106 @@
 
     async void Save()
     {
-        Student studentPosted = new Student();
-        var studentResult = await StudentService.PostStudentAsync(Student);
+        var studentResult = await StudentService.PutStudentAsync(Student);
         if (studentResult.IsSuccess)
-            studentPosted = JsonConvert.DeserializeObject<Student>(studentResult.Value);
-        var emailResult = await EmailService.PostEmailAsync(studentPosted.StudentId, email);
-        var addressResult = await AddressService.PostAddressAsync(studentPosted.StudentId, address);
-        var phoneResult = await PhoneService.PostPhoneAsync(studentPosted.StudentId, phone);
-        if (phoneResult.IsFailed || emailResult.IsFailed || studentResult.IsFailed || addressResult.IsFailed)
-            error = "Couldn't post";
+        {
+            foreach (var email in Emails)
+            {
+                if (email.EmailId != 0)
+                {
+                    var emailResult = await EmailService.PutEmailAsync(Student.StudentId, email);
+                    if (emailResult.IsFailed)
+                    {
+                        return;
+                    }
+                }
+            }
+            foreach (var address in Addresses)
+            {
+                if (address.AddressId != 0)
+                {
+                    var addressResult = await AddressService.PutAddressAsync(Student.StudentId, address);
+                    if (addressResult.IsFailed)
+                    {
+                        return;
+                    }
+                }
+            }
+            foreach (var phone in Phones)
+            {
+                if (phone.PhoneId != 0)
+                {
+                    var phoneResult = await PhoneService.PutPhoneAsync(Student.StudentId, phone);
+                    if (phoneResult.IsFailed)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        StateHasChanged();
+        Close();
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+
+    async void AddPhone(Phone phone)
+    {
+        var result = await PhoneService.PostPhoneAsync(Student.StudentId, phone);
+        if (result.IsSuccess)
+        {
+            Phones.Add(phone);
+            StateHasChanged();
+        }
+    }
+
+    async void AddAddress(Address address)
+    {
+        var result = await AddressService.PostAddressAsync(Student.StudentId, address);
+        if (result.IsSuccess)
+        {
+            Addresses.Add(address);
+            StateHasChanged();
+        }
+    }
+
+    async void AddEmail(Email email)
+    {
+        var result = await EmailService.PostEmailAsync(Student.StudentId, email);
+        if (result.IsSuccess)
+        {
+            Emails.Add(email);
+            StateHasChanged();
+        }
+    }
+
+    async void DeletePhone(Phone phone)
+    {
+        var result = await PhoneService.DeletePhoneAsync(phone.PhoneId);
+        if (result.IsSuccess)
+        {
+            Phones.Remove(phone);
+            StateHasChanged();
+        }
+    }
+
+    async void DeleteAddress(Address address)
+    {
+        var result = await AddressService.DeleteAddressAsync(address.AddressId);
+        if (result.IsSuccess)
+        {
+            Addresses.Remove(address);
+            StateHasChanged();
+        }
+    }
+
+    async void DeleteEmail(Email email)
+    {
+        var result = await EmailService.DeleteEmailAsync(email.EmailId);
+        if (result.IsSuccess)
+        {
+            Emails.Remove(email);
+            StateHasChanged();
+        }
     }
 
     void Close()

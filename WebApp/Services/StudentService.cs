@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Constants;
 using Data.Models;
 using FluentResults;
 using Newtonsoft.Json;
@@ -18,8 +19,7 @@ namespace WebApp.Services
             List<Student> students;
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44385/api/Student");
-                var response = await client.SendAsync(request);
+                var response = await client.GetAsync($"{Constants.APIUri}/Student");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 students = JsonConvert.DeserializeObject<List<Student>>(responseBody);
@@ -36,8 +36,7 @@ namespace WebApp.Services
             Student student;
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:44385/api/Student/{studentId}");
-                var response = await client.SendAsync(request);
+                var response = await client.GetAsync($"{Constants.APIUri}/Student/{studentId}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 student = JsonConvert.DeserializeObject<Student>(responseBody);
@@ -54,7 +53,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PostAsync("https://localhost:44385/api/Student", data);
+                var response = await client.PostAsync($"{Constants.APIUri}/Student", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 student = JsonConvert.DeserializeObject<Student>(responseBody);
@@ -71,7 +70,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(student), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PostAsync("https://localhost:44385/api/Student", data);
+                var response = await client.PutAsync($"{Constants.APIUri}/Student/{student.StudentId}", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 student = JsonConvert.DeserializeObject<Student>(responseBody);
@@ -83,11 +82,11 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<Result> DeleteStudent(int id)
+        public async Task<Result> DeleteStudentAsync(int id)
         {
             try
             {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Student/{id}");
+                var response = await client.DeleteAsync($"{Constants.APIUri}/Student/{id}");
                 response.EnsureSuccessStatusCode();
                 return Result.Ok();
             }
@@ -102,8 +101,7 @@ namespace WebApp.Services
             List<string> genders;
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://raw.githubusercontent.com/ceceradio/genders/master/genders.json");
-                var response = await client.SendAsync(request);
+                var response = await client.GetAsync("https://raw.githubusercontent.com/ceceradio/genders/master/genders.json");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 genders = JsonConvert.DeserializeObject<List<string>>(responseBody);

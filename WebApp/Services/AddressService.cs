@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Constants;
 using Data.Models;
 using FluentResults;
 using Newtonsoft.Json;
@@ -17,7 +18,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.GetAsync("https://localhost:44385/api/Address");
+                var response = await client.GetAsync($"{Constants.APIUri}/Address");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 List<Address> addresses = JsonConvert.DeserializeObject<List<Address>>(responseBody);
@@ -33,7 +34,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.GetAsync($"https://localhost:44385/api/Address/{id}");
+                var response = await client.GetAsync($"{Constants.APIUri}/Address/{id}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 Address address = JsonConvert.DeserializeObject<Address>(responseBody);
@@ -51,7 +52,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(address), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PostAsync("https://localhost:44385/api/Address", data);
+                var response = await client.PostAsync($"{Constants.APIUri}/Address", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 address = JsonConvert.DeserializeObject<Address>(responseBody);
@@ -69,7 +70,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(address), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PutAsync("https://localhost:44385/api/Address", data);
+                var response = await client.PutAsync($"{Constants.APIUri}/Address/{address.AddressId}", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 address = JsonConvert.DeserializeObject<Address>(responseBody);
@@ -85,7 +86,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Address/{id}");
+                var response = await client.DeleteAsync($"{Constants.APIUri}/Address/{id}");
                 response.EnsureSuccessStatusCode();
                 return Result.Ok();
             }

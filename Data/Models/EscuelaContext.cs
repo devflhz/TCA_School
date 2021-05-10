@@ -54,7 +54,8 @@ namespace Data.Models
 
                 entity.Property(e => e.CreatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("created_on");
+                    .HasColumnName("created_on")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.State)
                     .IsRequired()
@@ -66,7 +67,8 @@ namespace Data.Models
 
                 entity.Property(e => e.UpdatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("updated_on");
+                    .HasColumnName("updated_on")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ZipPostcode)
                     .IsRequired()
@@ -83,18 +85,23 @@ namespace Data.Models
 
             modelBuilder.Entity<Email>(entity =>
             {
-                entity.HasKey(e => e.Email1);
-
                 entity.ToTable("Email");
 
-                entity.Property(e => e.Email1)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("email");
+                entity.HasIndex(e => e.Email1, "EM_email")
+                    .IsUnique();
+
+                entity.Property(e => e.EmailId).HasColumnName("email_id");
 
                 entity.Property(e => e.CreatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("created_on");
+                    .HasColumnName("created_on")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Email1)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("email");
 
                 entity.Property(e => e.EmailType).HasColumnName("email_type");
 
@@ -102,7 +109,8 @@ namespace Data.Models
 
                 entity.Property(e => e.UpdatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("updated_on");
+                    .HasColumnName("updated_on")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.Emails)
@@ -113,14 +121,9 @@ namespace Data.Models
 
             modelBuilder.Entity<Phone>(entity =>
             {
-                entity.HasKey(e => e.Phone1);
-
                 entity.ToTable("Phone");
 
-                entity.Property(e => e.Phone1)
-                    .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("phone");
+                entity.Property(e => e.PhoneId).HasColumnName("phone_id");
 
                 entity.Property(e => e.AreaCode)
                     .IsRequired()
@@ -136,7 +139,14 @@ namespace Data.Models
 
                 entity.Property(e => e.CreatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("created_on");
+                    .HasColumnName("created_on")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Phone1)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("phone");
 
                 entity.Property(e => e.PhoneType).HasColumnName("phone_type");
 
@@ -144,7 +154,8 @@ namespace Data.Models
 
                 entity.Property(e => e.UpdatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("updated_on");
+                    .HasColumnName("updated_on")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.Phones)
@@ -161,7 +172,8 @@ namespace Data.Models
 
                 entity.Property(e => e.CreatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("created_on");
+                    .HasColumnName("created_on")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -169,7 +181,11 @@ namespace Data.Models
                     .IsUnicode(false)
                     .HasColumnName("first_name");
 
-                entity.Property(e => e.Gender).HasColumnName("gender");
+                entity.Property(e => e.Gender)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("gender");
 
                 entity.Property(e => e.LastName)
                     .IsRequired()
@@ -184,7 +200,8 @@ namespace Data.Models
 
                 entity.Property(e => e.UpdatedOn)
                     .HasColumnType("datetime")
-                    .HasColumnName("updated_on");
+                    .HasColumnName("updated_on")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -30,7 +30,7 @@ namespace API.Controllers
 
         // GET: api/Email/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Email>> GetEmail(string id)
+        public async Task<ActionResult<Email>> GetEmail(int id)
         {
             var email = await _context.Emails.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace API.Controllers
         // PUT: api/Email/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmail(string id, Email email)
+        public async Task<IActionResult> PutEmail(int id, Email email)
         {
-            if (id != email.Email1)
+            if (id != email.EmailId)
             {
                 return BadRequest();
             }
@@ -85,7 +85,7 @@ namespace API.Controllers
             }
             catch (DbUpdateException)
             {
-                if (EmailExists(email.Email1))
+                if (EmailExists(email.EmailId))
                 {
                     return Conflict();
                 }
@@ -100,7 +100,7 @@ namespace API.Controllers
 
         // DELETE: api/Email/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmail(string id)
+        public async Task<IActionResult> DeleteEmail(int id)
         {
             var email = await _context.Emails.FindAsync(id);
             if (email == null)
@@ -114,9 +114,9 @@ namespace API.Controllers
             return NoContent();
         }
 
-        private bool EmailExists(string id)
+        private bool EmailExists(int id)
         {
-            return _context.Emails.Any(e => e.Email1 == id);
+            return _context.Emails.Any(e => e.EmailId == id);
         }
     }
 }

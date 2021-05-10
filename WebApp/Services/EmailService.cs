@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Constants;
 
 namespace WebApp.Services
 {
@@ -17,7 +18,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.GetAsync("https://localhost:44385/api/Email");
+                var response = await client.GetAsync($"{Constants.APIUri}/Email");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 List<Email> emails = JsonConvert.DeserializeObject<List<Email>>(responseBody);
@@ -33,7 +34,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.GetAsync($"https://localhost:44385/api/Email/{id}");
+                var response = await client.GetAsync($"{Constants.APIUri}/Email/{id}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 Email emails = JsonConvert.DeserializeObject<Email>(responseBody);
@@ -52,7 +53,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(email), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PostAsync("https://localhost:44385/api/Email", data);
+                var response = await client.PostAsync($"{Constants.APIUri}/Email", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 email = JsonConvert.DeserializeObject<Email>(responseBody);
@@ -70,7 +71,7 @@ namespace WebApp.Services
             var data = new StringContent(JsonConvert.SerializeObject(email), Encoding.UTF8, "application/json");
             try
             {
-                var response = await client.PutAsync("https://localhost:44385/api/Email", data);
+                var response = await client.PutAsync($"{Constants.APIUri}/Email/{email.EmailId}", data);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 email = JsonConvert.DeserializeObject<Email>(responseBody);
@@ -85,7 +86,7 @@ namespace WebApp.Services
         {
             try
             {
-                var response = await client.DeleteAsync($"https://localhost:44385/api/Email/{id}");
+                var response = await client.DeleteAsync($"{Constants.APIUri}/Email/{id}");
                 response.EnsureSuccessStatusCode();
                 return Result.Ok();
             }

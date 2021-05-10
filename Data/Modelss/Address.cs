@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Data.Models
+namespace Data.Modelss
 {
-    public partial class Email
+    public partial class Address
     {
-        public int EmailId { get; set; }
-        public string Email1 { get; set; }
+        public int AddressId { get; set; }
         public int StudentId { get; set; }
-        public int EmailType { get; set; }
+        public string AddressLine { get; set; }
+        public string City { get; set; }
+        public string ZipPostcode { get; set; }
+        public string State { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
 

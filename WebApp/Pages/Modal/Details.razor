@@ -9,84 +9,53 @@
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="first_name">First Name</label>
-            <label placeholder="First Name">@Student.FirstName</label>
+            <label class="form-control" placeholder="First Name">@Student.FirstName</label>
         </div>
         <div class="form-group col-md-4">
             <label for="middle_name">Middle Name</label>
-            <label placeholder="Middle Name">@Student.MiddleName</label>
+            <label class="form-control" placeholder="Middle Name">@Student.MiddleName</label>
         </div>
         <div class="form-group col-md-4">
             <label for="last_name">Last Name</label>
-            <label placeholder="Last Name">@Student.LastName</label>
+            <label class="form-control" placeholder="Last Name">@Student.LastName</label>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col">
             <label for="inputAddress">Address</label>
-            <label placeholder="Address">@address.AddressLine</label>
+            @foreach (var address in Addresses)
+            {
+                <label class="form-control" placeholder="Address">@address.FormattedAddress</label>
+            }
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col">
             <label for="inputAddress">Email</label>
-            <label placeholder="Email">@email.Email1</label>
+            @foreach (var email in Emails)
+            {
+                <label class="form-control" placeholder="Email">@email.Email1</label>
+            }
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="phone">Phone</label>
-            <label placeholder="Phone">@phone.Phone1</label>
+            @foreach (var phone in Phones)
+            {
+                <label class="form-control" placeholder="Phone">@phone.Phone1</label>
+            }
         </div>
         <div class="form-group col-md-6">
-            <label for="phone">Genero</label>
-            <label placeholder="First Name">@Student.Gender</label>
+            <label for="phone">Gender</label>
+            <label class="form-control" placeholder="First Name">@Student.Gender</label>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="inputCity">City</label>
-            <label placeholder="City">@address.City</label>
-        </div>
-        <div class="form-group col-md-4">
-            <label for="inputState">State</label>
-            <label placeholder="State">@address.State</label>
-        </div>
-        <div class="form-group col-md-2">
-            <label for="inputZip">Zip</label>
-            <label placeholder="First Name">@address.ZipPostcode</label>
-        </div>
-    </div>
-    <p>@error</p>
 </form>
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public Student Student { get; set; }
-    private Address address = new Address();
-    private Phone phone = new Phone();
-    private Email email = new Email();
-    private string error;
-    private List<State> states = new List<State>();
-    private List<string> genders = new List<string>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        var statesResult = await AddressService.GetStatesAsync();
-        var gendersResult = await StudentService.GetGendersAsync();
-        if (gendersResult.IsSuccess)
-            genders = gendersResult.Value;
-        if (statesResult.IsSuccess)
-            states = statesResult.Value;
-    }
-
-    async void Save() //TODO: Handle cases.
-    {
-        Student studentPosted = new Student();
-        var studentResult = await StudentService.PostStudentAsync(Student);
-        var emailResult = await EmailService.PostEmailAsync(studentResult.Value.StudentId, email);
-        var addressResult = await AddressService.PostAddressAsync(studentResult.Value.StudentId, address);
-        var phoneResult = await PhoneService.PostPhoneAsync(studentResult.Value.StudentId, phone);
-        if (phoneResult.IsFailed || emailResult.IsFailed || studentResult.IsFailed || addressResult.IsFailed)
-            error = "Couldn't post";
-    }
+    [Parameter] public List<Address> Addresses { get; set; }
+    [Parameter] public List<Phone> Phones { get; set; }
+    [Parameter] public List<Email> Emails { get; set; }
 }

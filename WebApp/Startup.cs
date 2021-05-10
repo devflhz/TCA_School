@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApp.Services;
 using Blazored.Modal;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 
 namespace WebApp
 {
@@ -27,7 +30,15 @@ namespace WebApp
             services.AddSingleton<AddressService>();
             services.AddSingleton<EmailService>();
             services.AddSingleton<PhoneService>();
+            services.AddSingleton<ValidationService>();
             services.AddBlazoredModal();
+            services
+              .AddBlazorise(options =>
+              {
+                  options.ChangeTextOnKeyPress = true; // optional
+              })
+              .AddBootstrapProviders()
+              .AddFontAwesomeIcons();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

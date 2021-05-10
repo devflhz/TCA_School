@@ -29,7 +29,7 @@ namespace API.Controllers
 
         // GET: api/Phone/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Phone>> GetPhone(string id)
+        public async Task<ActionResult<Phone>> GetPhone(int id)
         {
             var phone = await _context.Phones.FindAsync(id);
 
@@ -44,9 +44,9 @@ namespace API.Controllers
         // PUT: api/Phone/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPhone(string id, Phone phone)
+        public async Task<IActionResult> PutPhone(int id, Phone phone)
         {
-            if (id != phone.Phone1)
+            if (id != phone.PhoneId)
             {
                 return BadRequest();
             }
@@ -84,7 +84,7 @@ namespace API.Controllers
             }
             catch (DbUpdateException)
             {
-                if (PhoneExists(phone.Phone1))
+                if (PhoneExists(phone.PhoneId))
                 {
                     return Conflict();
                 }
@@ -94,12 +94,12 @@ namespace API.Controllers
                 }
             }
 
-            return CreatedAtAction("GetPhone", new { id = phone.Phone1 }, phone);
+            return CreatedAtAction("GetPhone", new { id = phone.PhoneId }, phone);
         }
 
         // DELETE: api/Phone/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePhone(string id)
+        public async Task<IActionResult> DeletePhone(int id)
         {
             var phone = await _context.Phones.FindAsync(id);
             if (phone == null)
@@ -113,9 +113,9 @@ namespace API.Controllers
             return NoContent();
         }
 
-        private bool PhoneExists(string id)
+        private bool PhoneExists(int id)
         {
-            return _context.Phones.Any(e => e.Phone1 == id);
+            return _context.Phones.Any(e => e.PhoneId == id);
         }
     }
 }
